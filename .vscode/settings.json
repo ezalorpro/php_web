@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "**/*.html": "html",
+        "**/templates/**/*.html": "html",
+        "**/jinja2/**/*.html": "html",
+        "**/templates/*.*.twig": "html",
+        "**/requirements{/**,*}.{txt,in}": "pip-requirements",
+        "*.html": "html"
+    },
+}
