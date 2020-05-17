@@ -24,4 +24,14 @@
 		],
 		"description": "Snippe para rutas en php"
 	},
+	"path": {
+		"prefix": "Path",
+		"body": "{{ path('$1') }}",
+		"description": "Url sin argumentos"
+	},
+	"path_args": {
+		"prefix": "Path_args",
+		"body": "{{ path('$1', {$2: $3}) }}",
+		"description": "Url sin argumentos"
+	}
 }
