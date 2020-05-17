@@ -1,0 +1,77 @@
+{% macro errors(field) -%}
+{% if field.errors %}
+<ul id="user_error" style="margin-top: 0px; margin-bottom: 0px;">
+  {% for error in field.errors %}
+  <li><span class="invalido" style="display: block;"><i class="material-icons">cancel</i> {{ error }}</span>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{%- endmacro %}
+
+{% macro input(field, icon='', grid='', error_show=true, label=true) -%}
+<div class="input-field {{grid}}">
+  {% if icon %}
+  <i class="material-icons prefix">{{icon}}</i>
+  {% endif %}
+  {% if label %}
+  {{ form_label(field) }}
+  {% endif %}
+  {{ form_widget(field) }}
+  {% if error_show %}
+  {# {{ errors(field) }} #}
+  {% endif %}
+</div>
+{%- endmacro %}
+
+{% macro select(field, icon='', grid='', error_show=true, style='') -%}
+<div class="input-field {{grid}}" style="{{style}}">
+  {% if icon %}
+  <i class="material-icons prefix">{{icon}}</i>
+  {% endif %}
+  {{ field }}
+  {{ field.label }}
+  {% if error_show %}
+  {# {{ errors(field) }} #}
+  {% endif %}
+</div>
+{%- endmacro %}
+
+{% macro modal_post(obj) -%}
+    <div id="modal_post_{{obj.id}}" class="modal">
+      <div class="modal-content">
+        <h4 class="center">Confirmacion de borrado</h4>
+        <h5 class="center">¿Esta seguro que desea borrar este post?</h5>
+        <p><strong>Titulo:</strong> {{obj.title}}</p>
+        <p><strong>Fecha de creacion:</strong> {{obj.post_date.strftime('%d-%m-%Y  %I:%M:%S %p')}}</p>
+        <p><strong>Ultima modificacion:</strong> {{obj.post_modified.strftime('%d-%m-%Y  %I:%M:%S %p')}}</p>
+
+      </div>
+      <div class="modal-footer">
+        <form action="delete_post" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="modal-close btn waves-effect waves-light red darken-1">Borrar</button>
+          <a href="#!" class="modal-close btn-flat">Cancelar</a>
+        </form>
+      </div>
+    </div>
+{%- endmacro %}
+
+{% macro modal_comment(obj) -%}
+<div id="modal_comment_{{obj.id}}" class="modal">
+  <div class="modal-content">
+    <h4 class="center">Confirmacion de borrado</h4>
+    <h5 class="center">¿Esta seguro que desea borrar este comentario?</h5>
+    <p><strong>Comentario:</strong> {{obj.comment_text[:15]}}</p>
+    <p><strong>Fecha de creacion:</strong> {{obj.comment_date.strftime('%d-%m-%Y  %I:%M:%S %p')}}</p>
+
+  </div>
+  <div class="modal-footer">
+    <form action="delete_comment" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="modal-close btn waves-effect waves-light red darken-1">Borrar</button>
+      <a href="#!" class="modal-close btn-flat">Cancelar</a>
+    </form>
+  </div>
+</div>
+{%- endmacro %}
