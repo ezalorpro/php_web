@@ -18,8 +18,21 @@
             {{ input(registrationForm.first_name, 'person', 'col s12 m12 l6') }}
             {{ input(registrationForm.last_name, 'person_add', 'col s12 m12 l6') }}
             {{ input(registrationForm.email, 'mail_outline', 'col s12 m12 l12') }}
-            {{ input(registrationForm.plainPassword, 'lock_open', 'col s12 m12 l6', false) }}
+            {{ input(registrationForm.password.first, 'lock_open', 'col s12 m12 l6', false) }}
+            {{ input(registrationForm.password.second, 'lock_outline', 'col s12 m12 l6', false) }}
 
+            <div class="col s12">
+                {% if registrationForm.password.first.vars.errors|length %}
+                <ul class="invalido" style="display: block">
+                    <li><span><i class="material-icons">cancel</i>{{ form_errors(registrationForm.password.first) }}</span></li>
+                </ul>
+                {% endif %}
+                {% if registrationForm.password.second.vars.errors|length %}
+                <ul class="invalido" style="display: block">
+                    <li><span><i class="material-icons">cancel</i>{{ form_errors(registrationForm.password.second) }}</span></li>
+                </ul>
+                {% endif %}
+            </div>
             <div class="col s12 right-align" style="margin-bottom: 20px">
                 <button id="btnRegistrar" type="submit" class="btn waves-effect waves-light light-blue accent-4"
                     >Enviar<i class="material-icons right">send</i></button>

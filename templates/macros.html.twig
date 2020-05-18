@@ -1,15 +1,14 @@
 {% macro errors(field) -%}
-{% if field.errors %}
+{% if field.vars.errors|length %}
 <ul id="user_error" style="margin-top: 0px; margin-bottom: 0px;">
-  {% for error in field.errors %}
-  <li><span class="invalido" style="display: block;"><i class="material-icons">cancel</i> {{ error }}</span>
+  <li><span class="invalido" style="display: block;"><i class="material-icons">cancel</i>{{form_errors(field)}}</span>
   </li>
-  {% endfor %}
 </ul>
 {% endif %}
 {%- endmacro %}
 
 {% macro input(field, icon='', grid='', error_show=true, label=true) -%}
+{% from _self import errors %}
 <div class="input-field {{grid}}">
   {% if icon %}
   <i class="material-icons prefix">{{icon}}</i>
@@ -19,7 +18,7 @@
   {% endif %}
   {{ form_widget(field) }}
   {% if error_show %}
-  {# {{ errors(field) }} #}
+  {{ errors(field) }}
   {% endif %}
 </div>
 {%- endmacro %}

@@ -1,28 +1,24 @@
 {% extends 'layout.html.twig' %}
+{% from "macros.html.twig" import input  %}
 
 {% block title %}Log in!{% endblock %}
 
-{% extends 'base.html' %}
-{% from "macros.html.twig" import input  %}
-
 {% block content %}
-
 <div class="row">
     <div class="card-panel hoverable col s12 m10 l6 offset-m1 offset-l3">
-        <form action="{{ url_for('login') }}" method="POST" class="col s12">
-            <input type="hidden" name="next" value="{{ request.args.get('next', '') }}" />
+        {{ form_start(form, {'class': 'col s12'}) }}
+            {#<input type="hidden" name="next" value="{{ request.args.get('next', '') }}" />#}
 
             <div class="col s12 center" style="margin-bottom: 10px;">
                 <h5> Ingresar </h5>
             </div>
-
-            {{ form.csrf_token }}
             {{ input(form.username, 'perm_identity', 'col s12 m12 l12') }}
             {{ input(form.password, 'lock_open', 'col s12 m12 l12') }}
 
             <div class="col s12 right-align" style="margin-bottom: 20px">
                 <label>
-                    {{ form.recordar(class="filled-in checkbox-blue-grey") }}
+                    {#{{ form_widget(form._remember_me, {'attr': {'class':'filled-in checkbox-blue-grey'}}) }}#}
+                    <input type="checkbox" name="_remember_me" class='filled-in checkbox-blue-grey'>
                     <span>recordarme?</span>
                 </label>
             </div>
@@ -31,13 +27,17 @@
                 <button type="submit" class="btn waves-effect waves-light light-blue accent-4">Acceder<i
                         class="material-icons right">check</i></button>
             </div>
+            {{ form_row(form._token, {'attr': {'value': csrf_token("authenticate")}}) }}
+        {{ form_end(form) }}
 
-        </form>
+        {% if error %}
+        {{ error.messageKey|trans(error.messageData, 'security') }}
+        {% endif %}
     </div>
 </div>
-
 {% endblock content %}
 
+{#
 {% block content %}
 <form method="post">
     {% if error %}
@@ -52,7 +52,7 @@
 
     <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
     <label for="inputUsername">Username</label>
-    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" required autofocus>
+    <input type="text" value="" name="username" id="inputUsername" class="form-control" required autofocus>
     <label for="inputPassword">Password</label>
     <input type="password" name="password" id="inputPassword" class="form-control" required>
 
@@ -60,7 +60,6 @@
            value="{{ csrf_token('authenticate') }}"
     >
 
-    {#
         Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
         See https://symfony.com/doc/current/security/remember_me.html
 
@@ -69,10 +68,10 @@
                 <input type="checkbox" name="_remember_me"> Remember me
             </label>
         </div>
-    #}
 
     <button class="btn btn-lg btn-primary" type="submit">
         Sign in
     </button>
 </form>
 {% endblock %}
+ #}

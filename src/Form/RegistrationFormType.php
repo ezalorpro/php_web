@@ -6,6 +6,7 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,24 +21,18 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('username', TextType::class, ['label' => 'Usuario'])
-            ->add('first_name', TextType::class, ['label' => 'Nombre'])
-            ->add('last_name', TextType::class, ['label' => 'Apellido'])
-            ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
-                'mapped' => false,
-                'label' => 'Contraseña',
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter a password',
-                    ]),
-                    new Length([
-                        'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        // max length allowed by Symfony for security reasons
-                        'max' => 4096,
-                    ]),
+            ->add('first_name', TextType::class, ['label' => 'Nombre','required' => false])
+            ->add('last_name', TextType::class, ['label' => 'Apellido','required' => false])
+            ->add('password', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'invalid_message' => 'Ambas contraseñas deben coincidir.',
+                'options' => ['attr' => ['class' => 'password-field']],
+                'required' => true,
+                'first_options' => [
+                    'mapped' => false,
+                    'label' => 'Contraseña',
                 ],
+                'second_options' => ['mapped' => false, 'label' => 'Confirmar contraseña'],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Correo electrónico',

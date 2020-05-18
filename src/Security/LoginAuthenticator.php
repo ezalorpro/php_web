@@ -46,11 +46,12 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator implements Passw
     }
 
     public function getCredentials(Request $request)
-    {
+    {   
+        $data = $request->request->get('login_form');
         $credentials = [
-            'username' => $request->request->get('username'),
-            'password' => $request->request->get('password'),
-            'csrf_token' => $request->request->get('_csrf_token'),
+            'username' => $data['username'],
+            'password' => $data['password'],
+            'csrf_token' => $data['_token'],
         ];
         $request->getSession()->set(
             Security::LAST_USERNAME,
@@ -68,10 +69,10 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator implements Passw
         }
 
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $credentials['username']]);
-
+        print($credentials['username']);
         if (!$user) {
             // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Username could not be found.');
+            throw new CustomUserMessageAuthenticationException('Usuario y/o contraseña inválidos');
         }
 
         return $user;
