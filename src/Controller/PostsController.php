@@ -6,6 +6,7 @@ use App\Form\PostFormType;
 use App\Entity\Post;
 use App\Entity\User;
 use App\Entity\Tags;
+use App\Entity\ImagePost;
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,6 +18,8 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Asset\Packages;
 
 /**
 * @Route("/posts")
@@ -27,6 +30,7 @@ class PostsController extends AbstractController{
      * @Route("/", name="posts_list")
      */
     public function posts_list(EntityManagerInterface $entityManager){
+
         $user = $this->getUser();
         $Posts = $entityManager
                     ->getRepository(Post::class)
@@ -35,11 +39,40 @@ class PostsController extends AbstractController{
         return $this->render('posts/posts_list.html.twig', ['post_list' => $Posts,]);
     }
 
+    public function manege_images(Post $post, EntityManagerInterface $entityManager){
+        
+        $images1 = $entityManager
+                        ->getRepository(ImagePost::class)
+                        ->findBy(['post' => null]);
+        
+        foreach ($images1 as $image) {
+            if (strpos($post->getPostText(), $image->getImageName()) !== false) {
+                $image->setPost($post);
+            } 
+            elseif ($image->getUsuario() == $post->getUsuario()){
+                $entityManager->remove($image);
+            }
+        }
+
+        $images2 = $entityManager
+                        ->getRepository(ImagePost::class)
+                        ->findBy(['post' => $post]);
+
+        foreach ($images2 as $image) {
+            if (strpos($post->getPostText(), $image->getImageName()) === false) {
+                $entityManager->remove($image);
+            }
+        }
+
+        return 0;
+    }
+
     /**
     * @Route("/create/", name="post_create")
      */
-    public function post_create(Request $request, EntityManagerInterface $entityManager): Response 
-    {   
+    public function post_create(Request $request, 
+                                EntityManagerInterface $entityManager): Response {
+
         $post = new Post();
         $form = $this->createForm(PostFormType::class, $post);
         $form->handleRequest($request);
@@ -64,7 +97,8 @@ class PostsController extends AbstractController{
                                 ->findOneBy(['name' => $tag]);
                 if ($tag_obj) {
                     $post->addTag($tag_obj);
-                } else {
+                } 
+                else {
                     $tag_obj = new Tags();
                     $tag_obj->setName($tag);
                     $entityManager->persist($tag_obj);
@@ -76,6 +110,8 @@ class PostsController extends AbstractController{
             $post->setPostDate(new \DateTime());
             $post->setPostModified(new \DateTime());
             $entityManager->persist($post);
+            $entityManager->flush();
+            $this->manege_images($post, $entityManager);
             $entityManager->flush();
 
             return $this->redirectToRoute('post_view', ['post_id' => $post->getId()]);
@@ -99,32 +135,12 @@ class PostsController extends AbstractController{
     }
 
     /**
-     * @Route("/delete/{post_id}/", name="post_delete")
-     */
-    public function post_delete(string $post_id, EntityManagerInterface $entityManager, Request $request)
-    {   
-        $token = $request->request->get('_csrf_token');
-
-        if ($this->isCsrfTokenValid('delete-post', $token)) {        
-            $post = $entityManager->getRepository(Post::class)->find($post_id);
-            $entityManager->remove($post);
-            $entityManager->flush();
-            $referer = $request->headers->get('referer');
-            if ($referer !== null) {
-                return $this->redirect($referer);
-            } else {
-                return $this->redirectToRoute('home');
-            }
-        } else {
-            throw new InvalidCsrfTokenException();
-        }
-    }
-
-    /**
     * @Route("/edit/{post_id}/", name="post_edit")
     */
-    public function post_edit(string $post_id, Request $request, EntityManagerInterface $entityManager): Response 
-    {   
+    public function post_edit(string $post_id, 
+                              Request $request, 
+                              EntityManagerInterface $entityManager): Response {
+
         $post = $entityManager->getRepository(Post::class)->find($post_id);
         $form = $this->createForm(PostFormType::class, $post);
         $form->handleRequest($request);
@@ -160,6 +176,8 @@ class PostsController extends AbstractController{
             $post->setPostModified(new \DateTime());
             $entityManager->persist($post);
             $entityManager->flush();
+            $this->manege_images($post, $entityManager);
+            $entityManager->flush();
 
             return $this->redirectToRoute('post_view', ['post_id' => $post->getId()]);
         }
@@ -186,9 +204,78 @@ class PostsController extends AbstractController{
     }
 
     /**
+     * @Route("/delete/{post_id}/", name="post_delete")
+     */
+    public function post_delete(string $post_id, 
+                                EntityManagerInterface $entityManager, 
+                                Request $request){
+
+        $token = $request->request->get('_csrf_token');
+
+        if ($this->isCsrfTokenValid('delete-post', $token)) {        
+            $post = $entityManager->getRepository(Post::class)->find($post_id);
+            $images = $entityManager->getRepository(ImagePost::class)->findBy(['post' => $post]);
+            
+            foreach ($images as $image) {
+                $entityManager->remove($image);
+            }
+
+            $entityManager->remove($post);
+            $entityManager->flush();
+
+            $referer = $request->headers->get('referer');
+            if ($referer !== null) {
+                return $this->redirect($referer);
+            } 
+            else {
+                return $this->redirectToRoute('home');
+            }
+        } 
+        else {
+            throw new InvalidCsrfTokenException();
+        }
+    }
+
+    /**
+     * @Route("/image_handler/", name="post_imghandler")
+     */
+    public function post_imghandler(EntityManagerInterface $entityManager, 
+                                    FileUploader $fileUploader,
+                                    Request $request,
+                                    Packages $assetPackage){
+
+        $image_obj = new ImagePost();
+        $image_name = $request->files->get('file');
+        $file_name = $fileUploader->upload($image_name);
+        $image_obj->setImageName($file_name);
+        $image_obj->setImageDirectory($fileUploader->getTargetDirectory());
+        $image_obj->setUsuario($this->getUser());
+        $entityManager->persist($image_obj);
+        $entityManager->flush();
+        return new JsonResponse(['location' => $assetPackage->getUrl('images/'.$file_name)]);
+    }
+
+    /**
+     * @Route("/clean/", name="post_clean")
+     */
+    public function post_clean(EntityManagerInterface $entityManager){
+
+        $images1 = $entityManager
+                        ->getRepository(ImagePost::class)
+                        ->findBy(['post' => null]);
+        
+        foreach ($images1 as $image) {
+            $entityManager->remove($image);
+        }
+        $entityManager->flush();
+        return $this->redirectToRoute('user_profile');
+    }
+
+    /**
      * @Route("/{post_id}/", name="post_view")
      */
     public function post_view(string $post_id, EntityManagerInterface $entityManager){
+        
         $Post = $entityManager->getRepository(Post::class)->find($post_id);
         return $this->render('posts/post_view.html.twig', ['post' => $Post,] );
     }
