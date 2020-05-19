@@ -1,0 +1,103 @@
+{% extends "layout.html.twig" %}
+{% from "macros.html.twig" import modal_post, modal_comment %}
+
+{% block cssContent %}
+{% endblock cssContent %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col s12 m12 l12">
+    <h2 class="center" style="margin-top: 5px;">{{post.title}}</h2>
+    {{post.postText|escape}}
+    <p> </p>
+    <span class="col s6 m6 l6 right-left">
+      <p><a href="{{ path('user_profile') }}">Autor: {{post.usuario.firstName}} {{post.usuario.lastName}}</a></p>
+      <p>Creado el: {{ post.postDate|date('d/m/Y h:i:s A') }}</p>
+      <p>Ultima modificacion: {{ post.postModified|date('d/m/Y h:i:s A') }}</p>
+    </span>
+    {#<span class="col s6 m6 l6 right-align">
+      {% if post.tags %}
+      Tags:
+      {% for tag in post.tags %}
+      <div class="chip"><a href="{{ url_for('search', query=tag.name, query_type='tag') }}"
+          style="color: rgba(0, 0, 0, 0.6);">{{ tag.name }}</a></div>
+      {% endfor %}
+      {% endif %}
+    </span>#}
+  </div>
+  {#<div class="col s12 m12 l12">
+    <ul class="collection with-header">
+      <li class="collection-header">
+        <h6 class="center">Comentarios</h6>
+      </li>
+      {% for comment in comments %}
+      <li class="collection-item avatar">
+        {% if comment.user.avatar %}
+        <img src="{{ url_for('static', filename='images/' + comment.user.avatar) }}" alt="" class="circle">
+        {% else %}
+        <img src="{{ url_for('static', filename='images/default.png') }}" alt="" class="circle">
+        {% endif %}
+        <div>
+          <input type="hidden" name="com_{{comment.id}}" id="comentario_{{comment.id}}"
+            value='{{ comment.comment_text|safe }}'>
+          <div id="textarea_{{comment.id}}">
+            {{ comment.comment_text|safe }}
+          </div>
+          <div class="right-align">
+            {{ comment.user.username }} <br>
+            {{ comment.comment_date.strftime('%d/%m/%Y  %I:%M:%S %p') }}
+            {% if current_user == comment.user %}
+            <br><a href="!#" id='link_{{comment.id}}'><i class="material-icons icon-separation">edit</i></a><a
+              href="#modal_comment_{{comment.id}}" id='delete_{{comment.id}}'
+              class="red-text text-darken-1 modal-trigger"><i class="material-icons icon-separation">delete</i></a>
+            {% endif %}
+          </div>
+        </div>
+      </li>
+      {{ modal_comment(comment) }}
+      {% else %}
+      {% if current_user.is_authenticated %}
+      No hay comentarios, se el primero en comentar
+      {% else %}
+      No hay comentarios. Debes logiar para poder comentar
+      {% endif %}
+      {% endfor %}
+    </ul>
+
+    {% if current_user.is_authenticated %}
+    <form action="{{ url_for('comment_post', post_id=post.id) }}" method="post" id="principal_form">
+      {{ form.csrf_token }}
+      {{ form.comment_text }}
+      <button id='boton_principal' type="submit" class="btn waves-effect waves-light light-blue accent-4">Comentar<i
+          class="material-icons right">comment</i></button>
+    </form>
+    {% endif %}
+  </div>#}
+</div>
+
+{#{ modal_post(post) }#}
+
+{% endblock content %}
+{#
+{% block post_tools %}
+{% if current_user == post.user %}
+<div class="divider"></div>
+<li><a class="subheader">Opciones</a>
+</li>
+<li><a href="{{ url_for('edit_post', post_id=post.id) }}">Editar<i
+      class="material-icons right light-blue-text text-accent-4">edit</i></a>
+</li>
+<li><a href="#modal_post_{{post.id}}" class="modal-trigger">Borrar<i
+      class="material-icons right red-text text-darken-1">delete</i></a>
+</li>
+{% endif %}
+{% endblock post_tools %}
+
+
+{% block scriptsContent %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.2.1/tinymce.min.js" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='js/scriptsTag.js') }}" type="text/javascript">
+</script>
+{% include "commentTiny.html" %}
+{% endblock scriptsContent %}#}

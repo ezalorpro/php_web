@@ -27,10 +27,10 @@ class ProfileController extends AbstractController
      */
     public function profile(EntityManagerInterface $entityManager){   
         $user = $this->getUser();
-        $Post = $entityManager->getRepository(Post::class)->findBy(['usuario' => $user]);
+        $Posts = $entityManager->getRepository(Post::class)->findBy(['usuario' => $user]);
 
         return $this->render('profile/profile.html.twig', [
-            'usuario' => $user, 'post_list' => $Post
+            'usuario' => $user, 'post_list' => $Posts
             ]
         );
     }
@@ -38,8 +38,8 @@ class ProfileController extends AbstractController
     /**
      * @Route("/edit", name="profile_edit")
      */
-    public function edit_profile(EntityManagerInterface $entityManager, Request $request, FileUploader $fileUploader)
-    {   
+    public function edit_profile(EntityManagerInterface $entityManager, Request $request, FileUploader $fileUploader){
+           
         $user = $this->getUser();
         $form = $this->createForm(ProfileFormType::class, $user);
         $form->handleRequest($request);
