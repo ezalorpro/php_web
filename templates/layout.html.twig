@@ -20,7 +20,7 @@
           {% if app.user %}
           <ul id="dropdown1" class="dropdown-content">
             {% if app.user.roles[0] in ['ROLE_ADMIN', 'ROLE_EDITOR'] %}
-            <li><a href="list_post" class="light-blue-text text-accent-4">Mis post</a></li>
+            <li><a href="{{ path('posts_list') }}" class="light-blue-text text-accent-4">Mis post</a></li>
             {% endif %}
             <li><a href="{{ path('user_profile') }}" class="light-blue-text text-accent-4">Perfil</a></li>
             <li class="divider"></li>
@@ -70,7 +70,7 @@
 
         <li><a href="ploting" style="color: #0a0d1a;">Ploting</a></li>
         {% if app.user.roles[0] in ['ROLE_ADMIN', 'ROLE_EDITOR'] %}
-        <li><a href="list_post}">Mis post</a></li>
+        <li><a href="{{ path('posts_list') }}">Mis post</a></li>
         {% endif %}
         <li>
           <ul class="collapsible collapsible-accordion">

@@ -63,7 +63,7 @@
                 href="edit_post"
                 class="secondary-content light-blue-text text-accent-4"><i
                   class="material-icons icon-separation">edit</i></a><a
-              href="view_post"
+              href="{{ path('post_view', {post_id: post.id}) }}"
               class="secondary-content light-blue-text text-accent-4"><i
                 class="material-icons icon-separation">visibility</i></a>
           </div>
@@ -75,7 +75,7 @@
 
     <div class="row right-align">
       <div class="col s12">
-        <a href="crear_post" class="btn waves-effect waves-light light-blue accent-4">Nuevo
+        <a href="{{ path('post_create') }}" class="btn waves-effect waves-light light-blue accent-4">Nuevo
           post<i class="material-icons right">add</i></a>
       </div>
     </div>
