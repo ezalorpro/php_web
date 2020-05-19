@@ -25,10 +25,9 @@ class ProfileController extends AbstractController
     /**
      * @Route("/", name="user_profile")
      */
-    public function profile(EntityManagerInterface $entityManager)
-    {   
+    public function profile(EntityManagerInterface $entityManager){   
         $user = $this->getUser();
-        $Post = $entityManager->getRepository(Post::class)->findAll();
+        $Post = $entityManager->getRepository(Post::class)->findBy(['usuario' => $user]);
 
         return $this->render('profile/profile.html.twig', [
             'usuario' => $user, 'post_list' => $Post
