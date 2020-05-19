@@ -23,7 +23,7 @@
           <br>Autor: {{ post.usuario.username }}
         </span>
         <span class="col s12 m12 l12">
-          {{ post.postText|escape}}
+          {{ post.postText|raw}}
         </span>
       </div>
     </li>

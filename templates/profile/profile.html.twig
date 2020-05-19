@@ -1,5 +1,5 @@
 {% extends 'layout.html.twig' %}
-{# {% from "macros.html.twig" import modal_post %} #}
+{% from "macros.html.twig" import modal_post %}
 
 {% block cssContent %}
 {% endblock cssContent %}
@@ -60,7 +60,7 @@
           <div>
             <a href="#modal_post_{{post.id}}" class="secondary-content red-text text-darken-1 modal-trigger"><i
                 class="material-icons icon-separation2">delete</i></a><a
-                href="edit_post"
+                href="{{ path('post_edit', {post_id: post.id}) }}"
                 class="secondary-content light-blue-text text-accent-4"><i
                   class="material-icons icon-separation">edit</i></a><a
               href="{{ path('post_view', {post_id: post.id}) }}"
@@ -69,7 +69,7 @@
           </div>
         </div>
       </li>
-      {# {{ modal_post(post) }} #}
+      {{ modal_post(post) }}
       {% endfor %}
     </ul>
 

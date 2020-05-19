@@ -27,7 +27,9 @@ class ProfileController extends AbstractController
      */
     public function profile(EntityManagerInterface $entityManager){   
         $user = $this->getUser();
-        $Posts = $entityManager->getRepository(Post::class)->findBy(['usuario' => $user]);
+        $Posts = $entityManager
+                    ->getRepository(Post::class)
+                    ->findBy(['usuario' => $user], ['post_date' => 'DESC']);
 
         return $this->render('profile/profile.html.twig', [
             'usuario' => $user, 'post_list' => $Posts
@@ -63,8 +65,7 @@ class ProfileController extends AbstractController
                 
                 $user->setAvatar($avatarFileName);
             }
-
-            $entityManager = $this->getDoctrine()->getManager();
+            
             $entityManager->persist($user);
             $entityManager->flush();
 

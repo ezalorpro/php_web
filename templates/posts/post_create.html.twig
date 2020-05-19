@@ -15,8 +15,8 @@
   <div class="col s12 m12 l12">
     <div class="card-panel">
       <div class="row">
-        {% if post %}
-        {{ form_start(post_form, {'action': 'edit', 'enctype': "multipart/form-data"}) }}
+        {% if post.id %}
+        {{ form_start(post_form, {'action': path('post_edit', {post_id: post.id}), 'enctype': "multipart/form-data"}) }}
         {% else %}
         {{ form_start(post_form, {'action': path('post_create'), 'enctype': "multipart/form-data"}) }}
         {% endif %}

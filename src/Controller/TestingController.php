@@ -1,4 +1,11 @@
 <?php
+
+// $my_string = ['hola', 'pelispedia', 'www'];
+// foreach ($my_string as $tag) {
+//     $current_tag[] = ['tag' => $tag];
+// }
+// print_r(json_encode($current_tag));
+
 namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;

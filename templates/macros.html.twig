@@ -43,13 +43,13 @@
         <h4 class="center">Confirmacion de borrado</h4>
         <h5 class="center">¿Esta seguro que desea borrar este post?</h5>
         <p><strong>Titulo:</strong> {{obj.title}}</p>
-        <p><strong>Fecha de creacion:</strong> {{obj.post_date.strftime('%d-%m-%Y  %I:%M:%S %p')}}</p>
-        <p><strong>Ultima modificacion:</strong> {{obj.post_modified.strftime('%d-%m-%Y  %I:%M:%S %p')}}</p>
+        <p><strong>Fecha de creacion:</strong> {{obj.postDate|date('d/m/Y h:i:s A')}}</p>
+        <p><strong>Ultima modificacion:</strong> {{obj.postModified|date('d/m/Y h:i:s A')}}</p>
 
       </div>
       <div class="modal-footer">
-        <form action="delete_post" method="post">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <form action="{{ path('post_delete', {post_id: obj.id}) }}" method="post">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete-post') }}">
           <button type="submit" class="modal-close btn waves-effect waves-light red darken-1">Borrar</button>
           <a href="#!" class="modal-close btn-flat">Cancelar</a>
         </form>

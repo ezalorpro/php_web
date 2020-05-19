@@ -29,6 +29,7 @@ class PostFormType extends AbstractType
             ->add('tags', HiddenType::class, [
                 'label' => 'Tags',
                 'mapped' => false,
+                'error_bubbling' => false,
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Ingrese al menos un tag.',
