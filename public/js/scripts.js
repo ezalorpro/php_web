@@ -12,7 +12,7 @@ $(document).ready(function () {
     $('select').not('.disabled').formSelect();
 
     //  Para actualizar la imagen seleccionada en el avatar del perfil
-    $("#avatar_file").change(function () {
+    $("#profile_form_avatar").change(function () {
         readURL(this);
     });
 
@@ -30,6 +30,7 @@ $(document).ready(function () {
 
 //  Para actualizar la imagen seleccionada en el avatar del perfil
 function readURL(input) {
+    
     if (input.files && input.files[0]) {
         var reader = new FileReader();
 

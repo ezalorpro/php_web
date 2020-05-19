@@ -24,14 +24,15 @@
 {%- endmacro %}
 
 {% macro select(field, icon='', grid='', error_show=true, style='') -%}
+{% from _self import errors %}
 <div class="input-field {{grid}}" style="{{style}}">
   {% if icon %}
   <i class="material-icons prefix">{{icon}}</i>
   {% endif %}
-  {{ field }}
-  {{ field.label }}
+  {{ form_widget(field) }}
+  {{ form_label(field) }}
   {% if error_show %}
-  {# {{ errors(field) }} #}
+  {{ errors(field) }}
   {% endif %}
 </div>
 {%- endmacro %}

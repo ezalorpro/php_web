@@ -64,9 +64,9 @@ class User implements UserInterface
     private $location;
 
     /**
-     * @ORM\Column(type="json", nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $gender = [];
+    private $gender;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -206,12 +206,12 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getGender(): ?array
+    public function getGender(): ?string
     {
         return $this->gender;
     }
 
-    public function setGender(?array $gender): self
+    public function setGender(?string $gender): self
     {
         $this->gender = $gender;
 
