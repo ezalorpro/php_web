@@ -7,7 +7,7 @@
 {% block content %}
 
 <div class="row">
-  {% if usuario.roles[0] in ['ROLE_EDITOR', 'ROLE_ADMIN'] %}
+  {% if is_granted('ROLE_EDITOR') or is_granted('ROLE_ADMIN') %}
   <div class="col s12 m12 l7">
   {% else %}
   <div class="col s12 m12 l12">
@@ -47,7 +47,7 @@
       </div>
     </div>
   </div>
-  {% if usuario.roles[0] in ['ROLE_EDITOR', 'ROLE_ADMIN'] %}
+  {% if is_granted('ROLE_EDITOR') or is_granted('ROLE_ADMIN') %}
   <div class="col s12 m12 l5">
     <ul class="collection with-header">
       <li class="collection-header">

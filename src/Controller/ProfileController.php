@@ -51,19 +51,17 @@ class ProfileController extends AbstractController
             $avatarFile = $form['avatar']->getData();
 
             if ($avatarFile) {
-                $avatarFileName = $fileUploader->upload($avatarFile);
-                $old_avatar = $user->getAvatar();
-
-                if ($old_avatar) {
+                if ($user->getAvatar()) {
                     $filesystem = new Filesystem();
                     try {
-                        $filesystem->remove($fileUploader->getTargetDirectory().'/'.$old_avatar);
+                        $filesystem->remove($user->getAvatarUrl());
                     } catch (FileException $e) {
 
                     }
                 }
-                
+                $avatarFileName = $fileUploader->upload($avatarFile);
                 $user->setAvatar($avatarFileName);
+                $user->setAvatarUrl('/images');
             }
             
             $entityManager->persist($user);

@@ -1,0 +1,79 @@
+easy_admin:
+  
+  site_name: 'PHP Web'
+  
+  list:
+    item_permission: 'ROLE_ADMIN'
+  new:
+    item_permission: 'ROLE_ADMIN'
+  edit:
+    item_permission: 'ROLE_ADMIN'
+  
+  design:
+    menu:
+      - { entity: 'User', icon: 'user', label: 'Usuarios', permission: 'ROLE_ADMIN'}
+      - label: 'Posts'
+        icon: list
+        children:
+          - { entity: 'Post', icon: 'input', label: 'Post' , permission: 'ROLE_EDITOR', default: true }
+          - { entity: 'Tags', label: 'Tags', icon: 'tag', permission: 'ROLE_ADMIN'}
+          - { entity: 'ImagePost', label: 'Imagenes', icon: 'image', permission: 'ROLE_EDITOR'}
+      - { label: 'Regresar a la pagina', route: 'home', icon: home }
+  
+  entities:
+    User:
+      class: App\Entity\User
+      image_base_path: '/images/'
+      list:
+        fields:
+          - { property: 'username'}
+          - { property: 'email'}
+          - { property: 'roles'}
+          - { property: 'gender'}
+          - { property: 'location'}
+          - { property: 'avatar', type: 'image'}
+      form:
+        fields:
+          - {type: section, label: 'Avatar'}
+          - {property: avatar}
+          - {type: section, label: 'Informacion obligatoria'}
+          - {property: username}
+          - {property: password, type: password}
+          - {property: email, type: email}
+          - {type: section, label: 'Informacion Opcional'}
+          - {property: gender, type: 'choice', type_options: { expanded: false, multiple: false, choices: { 'Hombre': 'Hombre', 'Mujer': 'Mujer'}}}
+          - {property: location}
+          - {property: information, type: textarea}
+          - {type: section, label: 'Role en la pagina'}
+          - {property: roles, 
+              type: 'choice', 
+              type_options: { 
+                expanded: true, 
+                multiple: true, 
+                choices: { 
+                  'Administrador': 'ROLE_ADMIN', 
+                  'Editor': 'ROLE_EDITOR', 
+                  'Usuario normal': 'ROLE_USER'
+                }
+              }
+            }
+    Post:
+      class: App\Entity\Post
+      list:
+        item_permission: 'ROLE_EDITOR'
+      new:
+        item_permission: 'ROLE_EDITOR'
+      edit:
+        item_permission: 'ROLE_EDITOR'
+    
+    Tags:
+      class: App\Entity\Tags
+    
+    ImagePost:
+      class: App\Entity\ImagePost
+      list:
+        item_permission: 'ROLE_EDITOR'
+      new:
+        item_permission: 'ROLE_EDITOR'
+      edit:
+        item_permission: 'ROLE_EDITOR'

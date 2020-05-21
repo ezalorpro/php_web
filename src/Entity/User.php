@@ -73,6 +73,11 @@ class User implements UserInterface
      */
     private $information;
 
+    /**
+     * @ORM\Column(type="string", length=511, nullable=true)
+     */
+    private $avatar_url;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -226,6 +231,22 @@ class User implements UserInterface
     public function setInformation(?string $information): self
     {
         $this->information = $information;
+
+        return $this;
+    }
+
+    public function __toString() {
+        return (string) $this->username;
+    }
+
+    public function getAvatarUrl(): ?string
+    {
+        return $this->avatar_url;
+    }
+
+    public function setAvatarUrl(string $avatar_url): self
+    {
+        $this->avatar_url = $avatar_url.'/'.$this->avatar;
 
         return $this;
     }

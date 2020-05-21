@@ -100,4 +100,8 @@ class ImagePost
 
         return $this;
     }
+
+    public function __toString() {
+        return (string) $this->image_name;
+    }
 }
