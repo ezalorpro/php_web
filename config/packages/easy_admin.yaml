@@ -38,7 +38,7 @@ easy_admin:
           - {property: avatar}
           - {type: section, label: 'Informacion obligatoria'}
           - {property: username}
-          - {property: password, type: password}
+          - {property: plainPassword, label: 'Contraseña', type: password, type_options: { required: true }}
           - {property: email, type: email}
           - {type: section, label: 'Informacion Opcional'}
           - {property: gender, type: 'choice', type_options: { expanded: false, multiple: false, choices: { 'Hombre': 'Hombre', 'Mujer': 'Mujer'}}}
@@ -57,6 +57,9 @@ easy_admin:
                 }
               }
             }
+      edit:
+        fields:
+          - {property: 'plainPassword', label: 'Contraseña', type: 'password', type_options: { required: false } }
     Post:
       class: App\Entity\Post
       list:
