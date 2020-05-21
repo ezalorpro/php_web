@@ -13,9 +13,9 @@ easy_admin:
     menu:
       - { entity: 'User', icon: 'user', label: 'Usuarios', permission: 'ROLE_ADMIN'}
       - label: 'Posts'
-        icon: list
+        icon: blog
         children:
-          - { entity: 'Post', icon: 'input', label: 'Post' , permission: 'ROLE_EDITOR', default: true }
+          - { entity: 'Post', icon: 'list', label: 'Post' , permission: 'ROLE_EDITOR', default: true }
           - { entity: 'Tags', label: 'Tags', icon: 'tag', permission: 'ROLE_ADMIN'}
           - { entity: 'ImagePost', label: 'Imagenes', icon: 'image', permission: 'ROLE_EDITOR'}
       - { label: 'Regresar a la pagina', route: 'home', icon: home }
