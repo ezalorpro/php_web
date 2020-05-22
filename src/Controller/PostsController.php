@@ -214,11 +214,6 @@ class PostsController extends AbstractController{
 
         if ($this->isCsrfTokenValid('delete-post', $token)) {        
             $post = $entityManager->getRepository(Post::class)->find($post_id);
-            $images = $entityManager->getRepository(ImagePost::class)->findBy(['post' => $post]);
-            
-            foreach ($images as $image) {
-                $entityManager->remove($image);
-            }
 
             $entityManager->remove($post);
             $entityManager->flush();

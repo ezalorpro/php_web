@@ -83,6 +83,11 @@ class User implements UserInterface
      */
     private $avatar_url;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="usuario", cascade={"remove"})
+     */
+    private $posts;
+
     public function getId(): ?int
     {
         return $this->id;

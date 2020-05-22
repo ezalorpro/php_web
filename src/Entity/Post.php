@@ -52,6 +52,11 @@ class Post
      */
     private $tags;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ImagePost::class, mappedBy="post", cascade={"remove"})
+     */
+    private $images;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();

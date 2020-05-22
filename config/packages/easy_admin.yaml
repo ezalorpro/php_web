@@ -26,6 +26,7 @@ easy_admin:
       image_base_path: '/images/'
       list:
         fields:
+          - { property: 'id'}
           - { property: 'username'}
           - { property: 'email'}
           - { property: 'roles'}
@@ -66,6 +67,14 @@ easy_admin:
         list: 'admin/Models/EDITOR_list.html.twig'
       list:
         item_permission: 'ROLE_EDITOR'
+        fields:
+          - {property: id}
+          - {property: title, label: 'Titulo'}
+          - {property: usuario, label: 'Usuario'}
+          - {property: post_date, label: 'Creacion'}
+          - {property: post_modified, label: 'Modificado'}
+          - {property: tags, label: 'Tags'}
+
       form:
         item_permission: 'ROLE_EDITOR'
         fields:
@@ -80,12 +89,6 @@ easy_admin:
       class: App\Entity\ImagePost
       templates:
         list: 'admin/Models/EDITOR_list.html.twig'
-      list:
-        item_permission: 'ROLE_EDITOR'
-        fields:
-          - image_name
-          - post
-          - usuario
       new:
         item_permission: 'ROLE_EDITOR'
       edit:

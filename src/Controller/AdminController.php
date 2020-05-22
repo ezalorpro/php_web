@@ -7,6 +7,7 @@ use App\Entity\Post;
 use App\Entity\ImagePost;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
+use Symfony\Component\Filesystem\Filesystem;
 
 class AdminController extends EasyAdminController
 {
@@ -56,13 +57,13 @@ class AdminController extends EasyAdminController
     }
 
     protected function removeEntity($entity)
-    {
-        if ($entity instanceof Post) {
-            $images = $this->em->getRepository(ImagePost::class)->findBy(['post' => $entity]);
-            foreach ($images as $image) {
-                $this->em->remove($image);
-            }
+    {   
+        if ($entity instanceof User) {
+            $images_directory = $this->getParameter('images_directory');
+            $filesystem = new FileSystem();
+            $filesystem->remove($images_directory.'/'.$entity->getAvatar());
         }
+        
         parent::removeEntity($entity);
     }
 }
