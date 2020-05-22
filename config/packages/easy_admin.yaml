@@ -11,13 +11,13 @@ easy_admin:
   
   design:
     menu:
-      - { entity: 'User', icon: 'user', label: 'Usuarios', permission: 'ROLE_ADMIN'}
       - label: 'Posts'
         icon: blog
         children:
           - { entity: 'Post', icon: 'list', label: 'Post' , permission: 'ROLE_EDITOR', default: true }
           - { entity: 'Tags', label: 'Tags', icon: 'tag', permission: 'ROLE_ADMIN'}
           - { entity: 'ImagePost', label: 'Imagenes', icon: 'image', permission: 'ROLE_EDITOR'}
+      - { entity: 'User', icon: 'user', label: 'Usuarios', permission: 'ROLE_ADMIN'}
       - { label: 'Regresar a la pagina', route: 'home', icon: home }
   
   entities:
@@ -62,20 +62,30 @@ easy_admin:
           - {property: 'plainPassword', label: 'Contraseña', type: 'password', type_options: { required: false } }
     Post:
       class: App\Entity\Post
+      templates:
+        list: 'admin/Models/EDITOR_list.html.twig'
       list:
         item_permission: 'ROLE_EDITOR'
-      new:
+      form:
         item_permission: 'ROLE_EDITOR'
-      edit:
-        item_permission: 'ROLE_EDITOR'
+        fields:
+          - {property: title, type: text, label: 'Titulo'}
+          - {property: post_text, type: textarea, label: 'Contenido'}
+          - {property: tags, type_options:{required: true, by_reference: false}}
     
     Tags:
       class: App\Entity\Tags
     
     ImagePost:
       class: App\Entity\ImagePost
+      templates:
+        list: 'admin/Models/EDITOR_list.html.twig'
       list:
         item_permission: 'ROLE_EDITOR'
+        fields:
+          - image_name
+          - post
+          - usuario
       new:
         item_permission: 'ROLE_EDITOR'
       edit:
