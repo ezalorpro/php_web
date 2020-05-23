@@ -25,7 +25,7 @@ class ProfileFormType extends AbstractType
                 'label' => 'Correo electrónico',
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Please enter an email',
+                        'message' => 'Por favor introduzca un correo electrónico.',
                     ]),
                 ],
             ])

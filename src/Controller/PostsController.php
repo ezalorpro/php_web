@@ -21,6 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Asset\Packages;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
 * @Route("/posts")
@@ -29,6 +30,7 @@ class PostsController extends AbstractController{
     
     /**
      * @Route("/", name="posts_list")
+     * @IsGranted("ROLE_EDITOR")
      */
     public function posts_list(EntityManagerInterface $entityManager){
 
@@ -70,7 +72,8 @@ class PostsController extends AbstractController{
 
     /**
     * @Route("/create/", name="post_create")
-     */
+    * @IsGranted("ROLE_EDITOR")
+    */
     public function post_create(Request $request, 
                                 EntityManagerInterface $entityManager): Response {
 
@@ -137,6 +140,7 @@ class PostsController extends AbstractController{
 
     /**
     * @Route("/edit/{post_id}/", name="post_edit")
+    * @IsGranted("ROLE_EDITOR")
     */
     public function post_edit(string $post_id, 
                               Request $request, 
@@ -206,6 +210,7 @@ class PostsController extends AbstractController{
 
     /**
      * @Route("/delete/{post_id}/", name="post_delete")
+     * @IsGranted("ROLE_EDITOR")
      */
     public function post_delete(string $post_id, 
                                 EntityManagerInterface $entityManager, 
@@ -228,6 +233,7 @@ class PostsController extends AbstractController{
 
     /**
      * @Route("/image_handler/", name="post_imghandler")
+     * @IsGranted("ROLE_EDITOR")
      */
     public function post_imghandler(EntityManagerInterface $entityManager, 
                                     FileUploader $fileUploader,
@@ -247,6 +253,7 @@ class PostsController extends AbstractController{
 
     /**
      * @Route("/clean/", name="post_clean")
+     * @IsGranted("ROLE_EDITOR")
      */
     public function post_clean(EntityManagerInterface $entityManager){
 
@@ -263,6 +270,7 @@ class PostsController extends AbstractController{
 
     /**
      * @Route("/{post_id}/comment", name="post_comment")
+     * @IsGranted("ROLE_USER")
      */
     public function post_comment(string $post_id, 
                                  EntityManagerInterface $entityManager, 
@@ -287,6 +295,7 @@ class PostsController extends AbstractController{
 
     /**
      * @Route("/{post_id}/comment_edit/{comment_id}", name="post_comment_edit")
+     * @IsGranted("ROLE_USER")
      */
     public function post_comment_edit(string $post_id,
                                       string $comment_id,
@@ -310,6 +319,7 @@ class PostsController extends AbstractController{
 
     /**
      * @Route("/{post_id}/comment_delete/{comment_id}", name="post_comment_delete")
+     * @IsGranted("ROLE_USER")
      */
     public function post_comment_delete(string $post_id,
                                         string $comment_id,

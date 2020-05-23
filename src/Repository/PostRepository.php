@@ -19,32 +19,86 @@ class PostRepository extends ServiceEntityRepository
         parent::__construct($registry, Post::class);
     }
 
-    // /**
-    //  * @return Post[] Returns an array of Post objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
+    public function findBySelection($value, $search_keys)
+    {   
+        $qb = $this->createQueryBuilder('p');
+
+        if ($search_keys['Title']) {
+            $qb
+                ->orWhere('LOWER(p.title) LIKE :title')
+                ->setParameter('title', '%'.$value.'%');
+        }
+
+        if ($search_keys['Tags']) {
+            $qb
+                ->innerJoin('p.tags', 'tags')
+                ->orWhere('LOWER(tags.name) LIKE :name')
+                ->setParameter('name', '%'.$value.'%');
+        }
+
+        if ($search_keys['User']) {
+            $qb
+                ->innerJoin('p.usuario', 'usuario')
+                ->orWhere('LOWER(usuario.username) LIKE :username')
+                ->setParameter('username', '%'.$value.'%');
+        }
+
+        return $qb
+            ->orderBy('p.post_date', 'DESC')
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Post
+    public function findByAll($value)
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
+            ->innerJoin('p.tags', 'tags')
+            ->innerJoin('p.usuario', 'usuario')
+            ->Where('LOWER(p.title) LIKE :title')
+            ->orWhere('LOWER(tags.name) LIKE :name')
+            ->orWhere('LOWER(usuario.username) LIKE :username')
+            ->setParameter('title', '%'.$value.'%')
+            ->setParameter('name', '%'.$value.'%')
+            ->setParameter('username', '%'.$value.'%')
+            ->orderBy('p.post_date', 'DESC')
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getResult()
         ;
     }
-    */
+
+    public function findByTitle($value)
+    {
+        return $this->createQueryBuilder('p')
+            ->Where('LOWER(p.title) LIKE :title')
+            ->setParameter('title', '%'.$value.'%')
+            ->orderBy('p.post_date', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByTags($value)
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.tags', 'tags')
+            ->Where('LOWER(tags.name) LIKE :name')
+            ->setParameter('name', '%'.$value.'%')
+            ->orderBy('p.post_date', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByUser($value)
+    {   
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.usuario', 'usuario')
+            ->Where('LOWER(usuario.username) LIKE :username')
+            ->setParameter('username', '%'.$value.'%')
+            ->orderBy('p.post_date', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
