@@ -88,6 +88,11 @@ class User implements UserInterface
      */
     private $posts;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="usuario", orphanRemoval=true, cascade={"remove"})
+     */
+    private $comments;
+
     public function getId(): ?int
     {
         return $this->id;

@@ -7,6 +7,7 @@ use App\Entity\Post;
 use App\Entity\User;
 use App\Entity\Tags;
 use App\Entity\ImagePost;
+use App\Entity\Comment;
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -209,22 +210,16 @@ class PostsController extends AbstractController{
     public function post_delete(string $post_id, 
                                 EntityManagerInterface $entityManager, 
                                 Request $request){
-
+        
+        $post = $entityManager->getRepository(Post::class)->find($post_id);
         $token = $request->request->get('_csrf_token');
 
-        if ($this->isCsrfTokenValid('delete-post', $token)) {        
-            $post = $entityManager->getRepository(Post::class)->find($post_id);
+        if ($this->isCsrfTokenValid('delete-post', $token) and 
+            ($this->getUser() == $post->getUsuario())) {
 
             $entityManager->remove($post);
             $entityManager->flush();
-
-            $referer = $request->headers->get('referer');
-            if ($referer !== null) {
-                return $this->redirect($referer);
-            } 
-            else {
-                return $this->redirectToRoute('home');
-            }
+            return $this->redirectToRoute('user_profile');
         } 
         else {
             throw new InvalidCsrfTokenException();
@@ -267,11 +262,86 @@ class PostsController extends AbstractController{
     }
 
     /**
+     * @Route("/{post_id}/comment", name="post_comment")
+     */
+    public function post_comment(string $post_id, 
+                                 EntityManagerInterface $entityManager, 
+                                 Request $request){
+        
+        $token = $request->request->get('_csrf_token_add');
+
+        if ($this->isCsrfTokenValid('add-comment', $token)) {
+            $Post = $entityManager->getRepository(Post::class)->find($post_id);
+            $comment = new Comment();
+            $comment->setContent($request->request->get('comment_text'));
+            $comment->setDate(new \Datetime('now'));
+            $comment->setPost($Post);
+            $comment->setUsuario($this->getUser());
+            $entityManager->persist($comment);
+            $entityManager->flush();
+            return $this->redirectToRoute('post_view', ['post_id' => $post_id]);
+        }
+        
+        return $this->redirectToRoute('post_view', ['post_id' => $post_id]);
+    }
+
+    /**
+     * @Route("/{post_id}/comment_edit/{comment_id}", name="post_comment_edit")
+     */
+    public function post_comment_edit(string $post_id,
+                                      string $comment_id,
+                                      EntityManagerInterface $entityManager,
+                                      Request $request){
+        
+        $comment = $entityManager->getRepository(Comment::class)->find($comment_id);
+        $token = $request->request->get('_csrf_token_edit');
+
+        if ($this->isCsrfTokenValid('edit-comment', $token) and 
+            ($this->getUser() == $comment->getUsuario())) {
+            
+            $comment->setContent($request->request->get('com_'.$comment->getId()));
+            $entityManager->persist($comment);
+            $entityManager->flush();
+            return $this->redirectToRoute('post_view', ['post_id' => $post_id]);
+        }
+        
+        return $this->redirectToRoute('post_view', ['post_id' => $post_id]);
+    }
+
+    /**
+     * @Route("/{post_id}/comment_delete/{comment_id}", name="post_comment_delete")
+     */
+    public function post_comment_delete(string $post_id,
+                                        string $comment_id,
+                                        EntityManagerInterface $entityManager,
+                                        Request $request){
+        
+        $comment = $entityManager->getRepository(Comment::class)->find($comment_id);
+        $token = $request->request->get('_csrf_token_delete');
+
+        if ($this->isCsrfTokenValid('delete-comment', $token) and 
+            ($this->getUser() == $comment->getUsuario())) {
+            
+            $entityManager->remove($comment);
+            $entityManager->flush();
+            return $this->redirectToRoute('post_view', ['post_id' => $post_id]);
+        }
+        
+        return $this->redirectToRoute('post_view', ['post_id' => $post_id]);
+    }
+
+    /**
      * @Route("/{post_id}/", name="post_view")
      */
     public function post_view(string $post_id, EntityManagerInterface $entityManager){
         
         $Post = $entityManager->getRepository(Post::class)->find($post_id);
-        return $this->render('posts/post_view.html.twig', ['post' => $Post,] );
+        $comments = $entityManager
+                    ->getRepository(Comment::class)
+                    ->findBy(['post' => $Post], ['date' => 'ASC']);
+        return $this->render('posts/post_view.html.twig', [
+                                                    'post' => $Post,
+                                                    'comments' => $comments
+                                                    ]);
     }
 }

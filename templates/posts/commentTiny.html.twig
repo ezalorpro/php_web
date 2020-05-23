@@ -1,0 +1,62 @@
+<script>
+$(document).ready(function () {
+    tinymceFuncComment('#comment_text');
+    {% for comment in comments %}
+    $('#link_{{comment.id}}').on('click', function (e) {
+      e.preventDefault();
+      $('#comentario_{{comment.id}}').wrap('<form id="form_{{comment.id}}" method="POST" action="{{ path('post_comment_edit', {post_id: post.id, comment_id: comment.id}) }}"></form>');
+      tinymceFuncComment('#comentario_{{comment.id}}');
+      $('<a class="btn waves-effect waves-light red darken-1" id="cancel_{{comment.id}}">Cancelar<i class="material-icons right">cancel</i></a>').appendTo('#form_{{comment.id}}');
+      $('<button id="submit_{{comment.id}}" type="submit" class="btn waves-effect waves-light light-blue accent-4">Comentar<i class="material-icons right">comment</i></button>').appendTo('#form_{{comment.id}}');
+      $('<input type="hidden" name="_csrf_token_edit" value="{{ csrf_token('edit-comment') }}">').appendTo('#form_{{comment.id}}');
+      $('#textarea_{{comment.id}}').hide()
+      tinymce.remove('#comment_text');
+      $('#boton_principal').hide()
+      $('#comment_text').hide()
+      
+      $("#form_{{comment.id}}").submit(function() {
+        if (tinymce.activeEditor.getContent()) {
+          return true
+        } else {
+          alert('Debe escribir algo para poder comentar');
+          return false
+        }
+      });
+      
+      {% for element in comments %}
+        $('#link_{{element.id}}').hide()
+        $('#delete_{{element.id}}').hide()
+      {% endfor %}
+
+      $("#cancel_{{comment.id}}").on('click', function (en) {
+        en.preventDefault();
+        $("#cancel_{{comment.id}}").unwrap();
+        tinymce.remove('#comentario_{{comment.id}}');
+        $('input[name ="_csrf_token"]').remove();
+        $('#textarea_{{comment.id}}').show()
+        $('#comment_text').show()
+        tinymceFuncComment('#comment_text');
+        $('#boton_principal').show()
+        $("#submit_{{comment.id}}").remove();
+        $("#cancel_{{comment.id}}").remove();"submit_{{comment.id}}"
+        $('<input type="hidden" name="_csrf_token_add" value="{{ csrf_token('add-comment') }}">').appendTo('#principal_form');
+
+        {% for element in comments %}
+          $('#link_{{element.id}}').show()
+          $('#delete_{{element.id}}').show()
+        {% endfor %}
+      });
+    
+    }); 
+    {% endfor %}
+
+    $("#principal_form").submit(function() {
+      if (tinymce.activeEditor.getContent()) {
+        return true
+      } else {
+        alert('Debe escribir algo para poder comentar');
+        return false
+      }
+    });
+  });
+</script>

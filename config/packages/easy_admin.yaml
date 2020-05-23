@@ -17,6 +17,7 @@ easy_admin:
           - { entity: 'Post', icon: 'list', label: 'Post' , permission: 'ROLE_EDITOR', default: true }
           - { entity: 'Tags', label: 'Tags', icon: 'tag', permission: 'ROLE_ADMIN'}
           - { entity: 'ImagePost', label: 'Imagenes', icon: 'image', permission: 'ROLE_EDITOR'}
+          - { entity: 'Comment', label: 'Comentarios', icon: 'comment', permission: 'ROLE_EDITOR'}
       - { entity: 'User', icon: 'user', label: 'Usuarios', permission: 'ROLE_ADMIN'}
       - { label: 'Regresar a la pagina', route: 'home', icon: home }
   
@@ -74,6 +75,7 @@ easy_admin:
           - {property: post_date, label: 'Creacion'}
           - {property: post_modified, label: 'Modificado'}
           - {property: tags, label: 'Tags'}
+          - {property: comments, label: 'Comentarios'}
 
       form:
         item_permission: 'ROLE_EDITOR'
@@ -89,6 +91,15 @@ easy_admin:
       class: App\Entity\ImagePost
       templates:
         list: 'admin/Models/EDITOR_list.html.twig'
+      new:
+        item_permission: 'ROLE_EDITOR'
+      edit:
+        item_permission: 'ROLE_EDITOR'
+    
+    Comment:
+      class: App\Entity\Comment
+      list:
+        item_permission: 'ROLE_EDITOR'
       new:
         item_permission: 'ROLE_EDITOR'
       edit:
