@@ -20,7 +20,7 @@
       {% if post.tags|length %}
       Tags:
       {% for tag in post.tags %}
-      <div class="chip"><a href="search query query_type"
+      <div class="chip"><a href="{{ path('app_search', {query: tag.name, query_type: 'Tags'}) }}"
           style="color: rgba(0, 0, 0, 0.6);">{{ tag.name }}</a></div>
       {% endfor %}
       {% endif %}

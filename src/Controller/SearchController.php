@@ -44,7 +44,13 @@ class SearchController extends AbstractController
         elseif($request->query->get('query')){
             $value = strtolower($request->query->get('query'));
             $form->get('search')->setData($value);
-            $search_keys = array('Title' => true, 'Tags' => true, 'User' => true);
+            
+            if ($request->query->get('query_type') == 'all') {
+                $search_keys = array('Title' => true, 'Tags' => true, 'User' => true);
+            } elseif ($request->query->get('query_type') == 'Tags') {
+                $search_keys = array('Title' => false, 'Tags' => true, 'User' => false);
+            }
+            
             $results = $entityManager->getRepository(Post::class)
                 ->findBySelection($value, $search_keys);
                 
