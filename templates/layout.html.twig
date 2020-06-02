@@ -28,7 +28,7 @@
           </ul>
           {% endif %}
           <div class="nav-wrapper light-blue accent-4">
-            <a href="/" class="brand-logo">Intento de pagina</a>
+            <a href="/" class="brand-logo">PHP(Symfony)</a>
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             {% if not app.user %}
             <ul class="right hide-on-med-and-down">
@@ -60,7 +60,7 @@
         </li>
         <div class="divider"></div>
         {% endblock navbar %}
-        <li><a href="ploting">Ploting</a></li>
+        <li><a href="{{ path('app_search') }}">Buscar</a></li>
         <li><a href="{{ path('app_register') }}">registrarse</a></li>
         <li><a href="{{ path('app_login') }}">login</a></li>
       </ul>
@@ -69,7 +69,7 @@
 
         {{ block('navbar') }}
 
-        <li><a href="ploting" style="color: #0a0d1a;">Ploting</a></li>
+        <li><a href="{{ path('app_search') }}">Buscar</a></li>
         {% if is_granted('ROLE_EDITOR') or is_granted('ROLE_ADMIN') %}
         <li><a href="{{ path('posts_list') }}">Mis post</a></li>
         {% endif %}
